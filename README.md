@@ -24,7 +24,7 @@ Los datos fijos de la parroquia (población, diócesis, provincia, encargado del
 
 ## Puesta en marcha
 
-1. **Repositorio**: `Charlie-Diaz-Azarola/partidas-de-bautismo`. GitHub Pages gratuito exige repositorio público; no contiene datos personales ni la firma y el sello (ver «Firma y sello»).
+1. **Repositorio**: `Charlie-Diaz-Azarola/partidas-bautismo`. GitHub Pages gratuito exige repositorio público; no contiene datos personales ni la firma y el sello (ver «Firma y sello»).
 2. **Clave de Claude**: créala en la consola de Anthropic.
 3. **Worker** (requiere Node.js y una cuenta gratuita de Cloudflare):
    ```
