@@ -1,0 +1,7 @@
+name = "partidas-bautismo"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Las claves NO se escriben aquí. Se añaden con `wrangler secret put`.
+[vars]
+ALLOWED_ORIGIN = "https://USUARIO.github.io"

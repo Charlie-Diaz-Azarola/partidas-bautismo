@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Partidas de Bautismo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Partidas de Bautismo</h1>
+    <p>Fotografía una partida del libro y obtén el documento de Word.</p>
+  </header>
+
+  <main>
+    <section id="acceso" class="tarjeta">
+      <h2>Acceso</h2>
+      <label>Clave de acceso
+        <input id="clave" type="password" autocomplete="current-password">
+      </label>
+      <small>Se guarda solo en este dispositivo.</small>
+    </section>
+
+    <section id="paso-foto" class="tarjeta">
+      <label class="boton grande" for="entrada-foto">📷 Hacer foto al libro</label>
+      <input id="entrada-foto" type="file" accept="image/*" capture="environment" hidden>
+      <img id="vista" alt="Foto del libro" hidden>
+      <p id="estado" role="status"></p>
+    </section>
+
+    <form id="formulario" class="tarjeta" hidden>
+      <h2>Revisa los datos</h2>
+      <p class="aviso">La lectura automática puede fallar con letra manuscrita. Corrige lo necesario antes de generar el documento.</p>
+      <div id="campos"></div>
+      <button type="submit" class="boton grande">Generar partida</button>
+    </form>
+
+    <section id="resultado" class="tarjeta" hidden>
+      <h2>Partida lista</h2>
+      <a id="descarga" class="boton grande">⬇️ Descargar Word</a>
+      <p class="aviso">El documento no se guarda en ningún servidor: descárgalo ahora.</p>
+      <button id="nueva" type="button" class="boton secundario">Nueva partida</button>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/pizzip@3.1.7/dist/pizzip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.47.7/build/docxtemplater.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
