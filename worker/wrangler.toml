@@ -1,6 +1,8 @@
 name = "partidas-bautismo"
 main = "worker.js"
 compatibility_date = "2025-01-01"
+workers_dev = true
+preview_urls = false
 
 # Las claves NO se escriben aquí. Se añaden con `wrangler secret put`.
 [vars]

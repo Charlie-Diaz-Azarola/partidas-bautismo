@@ -1,7 +1,7 @@
 // Configuración pública de la web (no contiene secretos).
 window.CONFIG = {
   // Dirección del Worker de Cloudflare (ver README.md).
-  WORKER_URL: "https://partidas-bautismo.TU-CUENTA.workers.dev",
+  WORKER_URL: "https://partidas-bautismo.charlie-fe8.workers.dev",
 
   // Datos fijos que salen en cada certificación.
   PARROQUIA: "Santo Domingo de Silos",
