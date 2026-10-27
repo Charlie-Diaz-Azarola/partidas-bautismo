@@ -31,7 +31,7 @@ Los datos fijos de la parroquia (población, diócesis, provincia, encargado del
    python tools/preparar_firma.py "ruta/a/Firma y sello.png"   # crea worker/firma_sello.js (no se sube a GitHub)
    cd worker
    npx wrangler login
-   # edita wrangler.toml: ALLOWED_ORIGIN (https://USUARIO.github.io)
+   # edita wrangler.toml: ALLOWED_ORIGIN (ya puesto: https://charlie-diaz-azarola.github.io)
    npx wrangler secret put ANTHROPIC_API_KEY
    npx wrangler secret put ACCESS_KEY      # una contraseña que elijas
    npx wrangler deploy
