@@ -82,6 +82,13 @@ for r in titulo.runs:
     sp = OxmlElement("w:spacing")
     sp.set(qn("w:val"), "40")  # espaciado entre letras
     r._r.get_or_add_rPr().append(sp)
+# Línea horizontal bajo el título que lo separa del resto del contenido
+bordes_titulo = OxmlElement("w:pBdr")
+linea = OxmlElement("w:bottom")
+for k, v in (("val", "single"), ("sz", "8"), ("space", "6"), ("color", "000000")):
+    linea.set(qn(f"w:{k}"), v)
+bordes_titulo.append(linea)
+titulo._p.get_or_add_pPr().insert(0, bordes_titulo)
 
 # --- Cuerpo en dos columnas -------------------------------------------------
 tabla = doc.add_table(rows=1, cols=2)

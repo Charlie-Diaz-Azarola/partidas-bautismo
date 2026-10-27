@@ -124,7 +124,7 @@ function datosFijos() {
     provincia: CONFIG.PROVINCIA,
     encargado: CONFIG.ENCARGADO,
     obispado: "",
-    lugar_expedicion: CONFIG.POBLACION,
+    lugar_expedicion: CONFIG.LUGAR_EXPEDICION,
     expedicion_dia: String(hoy.getDate()),
     expedicion_mes: hoy.toLocaleDateString("es-ES", { month: "long" }),
     expedicion_anio: String(hoy.getFullYear()),
