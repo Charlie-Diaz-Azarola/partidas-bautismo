@@ -2,7 +2,7 @@
 // `porDefecto`, que no están en el acta: parten de ese valor y se pueden cambiar.
 // `fila` agrupa campos que se muestran en la misma línea; `seccion` abre un bloque nuevo.
 const CAMPOS = [
-  { id: "encargado", etiqueta: "Encargado del archivo (sin «Don»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO },
+  { id: "encargado", etiqueta: "Encargado del archivo (sin «D./Dª.»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO },
   { id: "libro", etiqueta: "Libro", seccion: "Datos del archivo", fila: "archivo" },
   { id: "folio", etiqueta: "Folio", fila: "archivo" },
   { id: "numero", etiqueta: "Núm.", fila: "archivo" },
