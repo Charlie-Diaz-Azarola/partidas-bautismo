@@ -13,7 +13,7 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_UNDERLINE
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Pt, Cm
@@ -39,7 +39,7 @@ CAMPO = re.compile(r"(\{[a-z_0-9]+\})")
 def parrafo(contenedor, partes, *, tam=11, fuente=None, alinear=None,
             antes=0, despues=4, sangria=0):
     """Añade un párrafo. `partes` es un texto o una lista de (negrita, texto).
-    Lo que va entre llaves es un campo (se muestra punteado); el resto, texto fijo."""
+    Lo que va entre llaves es un campo; el resto, texto fijo."""
     if isinstance(partes, str):
         partes = [(False, partes)]
     p = contenedor.add_paragraph()
@@ -58,8 +58,6 @@ def parrafo(contenedor, partes, *, tam=11, fuente=None, alinear=None,
             if fuente:
                 r.font.name = fuente
             r.bold = negrita
-            if CAMPO.fullmatch(trozo):
-                r.font.underline = WD_UNDERLINE.DOTTED
     return p
 
 
