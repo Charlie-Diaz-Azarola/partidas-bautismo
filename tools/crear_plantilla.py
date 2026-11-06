@@ -20,8 +20,8 @@ from docx.shared import Pt, Cm
 
 DESTINO = Path(__file__).resolve().parent.parent / "plantilla" / "plantilla_partida.docx"
 
-ANCHO_IZQ = Cm(3.36)
-ANCHO_DER = Cm(14.64)
+ANCHO_IZQ = Cm(4.36)
+ANCHO_DER = Cm(13.64)
 
 doc = Document()
 seccion = doc.sections[0]
@@ -57,10 +57,9 @@ def parrafo(contenedor, partes, *, tam=11, fuente=None, alinear=None,
             r.font.size = Pt(tam)
             if fuente:
                 r.font.name = fuente
+            r.bold = negrita
             if CAMPO.fullmatch(trozo):
                 r.font.underline = WD_UNDERLINE.DOTTED
-            else:
-                r.bold = negrita
     return p
 
 
@@ -110,42 +109,38 @@ parrafo(izq, [(True, "Notas marginales")], tam=10, fuente="Arial",
 parrafo(izq, "{notas_marginales}", tam=9, fuente="Arial")
 
 # Columna derecha
-SANG = 1.2  # sangría de las líneas PADRES / ABUELOS
-parrafo(der, [(True, "Don "), (False, "{encargado},")], despues=6)
-parrafo(der, "Encargado del Archivo Parroquial de la Parroquia de Santo Domingo de Silos", despues=6)
-parrafo(der, "Diócesis de Getafe,", despues=6)
-parrafo(der, [(True, "CERTIFICA: "),
-              (False, "Que según consta del acta reseñada al margen, correspondiente "
+parrafo(der, [(True, "Don {encargado}"), (False, ",")], despues=6)
+parrafo(der, "Encargado del Archivo Parroquial de la Parroquia de Santo Domingo de Silos, "
+             "Diócesis de Getafe,", despues=6)
+parrafo(der, [(True, "CERTIFICA "),
+              (False, "que según consta en el acta reseñada al margen, correspondiente "
                       "al libro de Bautismos,")])
-parrafo(der, "D. {nombre},")
-parrafo(der, "fue BAUTIZADO el día {bautismo_dia} de {bautismo_mes} de {bautismo_anio}")
-parrafo(der, "Nació el día {nacimiento_dia} de {nacimiento_mes} de {nacimiento_anio},")
-parrafo(der, "en la calle {calle}, n.º {calle_numero},")
-parrafo(der, "siendo natural de {natural_de}, Diócesis de {natural_diocesis},")
-parrafo(der, "Provincia de {natural_provincia}", despues=8)
+parrafo(der, "D./Dª. {nombre} fue BAUTIZADO/A el día {bautismo_dia} de {bautismo_mes} "
+             "de {bautismo_anio}.")
+parrafo(der, "Nació el día {nacimiento_dia} de {nacimiento_mes} de {nacimiento_anio} "
+             "en la calle {calle}, n.º {calle_numero}, siendo natural de {natural_de}, "
+             "Diócesis de {natural_diocesis}, provincia de {natural_provincia}.")
 
 for titulo_bloque, hombre, mujer in (("PADRES", "padre", "madre"),
                                      ("ABUELOS PATERNOS", "abuelo_paterno", "abuela_paterna"),
                                      ("ABUELOS MATERNOS", "abuelo_materno", "abuela_materna")):
-    parrafo(der, f"{titulo_bloque}: D. {{{hombre}}},", sangria=SANG, despues=3)
-    parrafo(der, f"natural de {{{hombre}_natural}},", despues=3)
-    parrafo(der, f"y D.ª {{{mujer}}},", despues=3)
-    parrafo(der, f"natural de {{{mujer}_natural}}", despues=8)
+    parrafo(der, f"{titulo_bloque}: D. {{{hombre}}}, natural de {{{hombre}_natural}}, "
+                 f"y D.ª {{{mujer}}}, natural de {{{mujer}_natural}}.", despues=3)
 
 parrafo(der, "PADRINOS: {padrinos}", despues=8)
 parrafo(der, "MINISTRO: {ministro}", despues=14)
 parrafo(der, "Pinto, a {expedicion_dia} de {expedicion_mes} de {expedicion_anio}",
         alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=0)
 # Espacio en blanco para firmar y sellar a mano tras imprimir (unos 2,7 cm).
-parrafo(der, "(Firma del Encargado del Archivo)", tam=8, fuente="Arial",
-        alinear=WD_ALIGN_PARAGRAPH.RIGHT, antes=77, despues=0)
-parrafo(der, "(Sello)", tam=8, fuente="Arial", alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=14)
+parrafo(der, "(Firma y sello)", tam=8, fuente="Arial",
+        alinear=WD_ALIGN_PARAGRAPH.CENTER, antes=77, despues=0)
 
-# Pie: para otras diócesis
-parrafo(der, "(Para otras Diócesis)", tam=8, fuente="Arial", sangria=1.2, despues=2)
-parrafo(der, "Obispado de", tam=8, fuente="Arial", despues=2)
-parrafo(der, "V.º B.º:", tam=8, fuente="Arial", sangria=2.5, despues=0)
-parrafo(der, "El Vicario General,", tam=8, fuente="Arial", sangria=2.2, despues=0)
+# Pie: para otras diócesis, con espacio para el visto bueno
+parrafo(der, "(Para otras Diócesis). Obispado de", tam=8, fuente="Arial", antes=14.2, despues=2)
+parrafo(der, "V.º B.º:", tam=8, fuente="Arial",
+        alinear=WD_ALIGN_PARAGRAPH.CENTER, antes=77.1, despues=0)
+parrafo(der, "El Vicario General,", tam=8, fuente="Arial",
+        alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=0)
 
 DESTINO.parent.mkdir(parents=True, exist_ok=True)
 doc.save(DESTINO)
