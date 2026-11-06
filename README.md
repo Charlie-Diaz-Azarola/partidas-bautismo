@@ -20,7 +20,7 @@ móvil ──► web (GitHub Pages) ──► Worker de Cloudflare ──► API
 
 La plantilla reproduce el impreso «Certificación de partida de bautismo» (columna izquierda con datos del archivo y notas marginales, cuerpo de certificación a la derecha). Se puede abrir y retocar en Word, conservando los campos entre llaves. No incluye el logotipo ni el número de serie del impreso preimpreso. Si cambias campos, mantén sincronizados `tools/crear_plantilla.py`, `CAMPOS` en `app.js` y `CAMPOS` en `worker/worker.js`.
 
-Los datos fijos de la parroquia (población, diócesis, provincia, encargado del archivo) se rellenan una sola vez en `config.js`. La fecha de expedición es la del día.
+La parroquia, la población, la diócesis, la provincia y el lugar de expedición van como texto fijo en la plantilla (`tools/crear_plantilla.py`). El encargado del archivo aparece en el formulario con el valor inicial de `config.js` y se puede cambiar antes de generar el documento. La fecha de expedición es la del día.
 
 ## Puesta en marcha
 

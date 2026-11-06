@@ -20,8 +20,8 @@ from docx.shared import Pt, Cm
 
 DESTINO = Path(__file__).resolve().parent.parent / "plantilla" / "plantilla_partida.docx"
 
-ANCHO_IZQ = Cm(5.6)
-ANCHO_DER = Cm(12.4)
+ANCHO_IZQ = Cm(3.36)
+ANCHO_DER = Cm(14.64)
 
 doc = Document()
 seccion = doc.sections[0]
@@ -94,16 +94,17 @@ tabla.alignment = WD_TABLE_ALIGNMENT.CENTER
 tabla.autofit = False
 izq, der = tabla.rows[0].cells
 izq.width, der.width = ANCHO_IZQ, ANCHO_DER
+tabla.columns[0].width, tabla.columns[1].width = ANCHO_IZQ, ANCHO_DER
 borde_derecho(izq)
 for c in (izq, der):  # quita el párrafo vacío inicial de cada celda
     c._tc.remove(c.paragraphs[0]._p)
 
 # Columna izquierda
-for etiqueta, campo in (("Parroquia", "parroquia"), ("Población", "poblacion"),
-                        ("Diócesis", "diocesis"), ("Provincia", "provincia")):
-    parrafo(izq, f"{etiqueta} {{{campo}}}", tam=9, fuente="Arial", despues=9)
+for texto in ("Parroquia: Santo Domingo de Silos", "Población: Pinto",
+              "Diócesis: Getafe", "Provincia: Madrid"):
+    parrafo(izq, texto, tam=9, fuente="Arial", despues=9)
 for etiqueta, campo in (("Libro", "libro"), ("Folio", "folio"), ("Núm.", "numero")):
-    parrafo(izq, f"{etiqueta} {{{campo}}}", tam=9, fuente="Arial", despues=3)
+    parrafo(izq, f"{etiqueta}: {{{campo}}}", tam=9, fuente="Arial", despues=3)
 parrafo(izq, [(True, "Notas marginales")], tam=10, fuente="Arial",
         alinear=WD_ALIGN_PARAGRAPH.CENTER, antes=18, despues=8)
 parrafo(izq, "{notas_marginales}", tam=9, fuente="Arial")
@@ -111,8 +112,8 @@ parrafo(izq, "{notas_marginales}", tam=9, fuente="Arial")
 # Columna derecha
 SANG = 1.2  # sangría de las líneas PADRES / ABUELOS
 parrafo(der, [(True, "Don "), (False, "{encargado},")], despues=6)
-parrafo(der, "Encargado del Archivo Parroquial de {archivo_de}", despues=6)
-parrafo(der, "Diócesis de {diocesis},", despues=6)
+parrafo(der, "Encargado del Archivo Parroquial de la Parroquia de Santo Domingo de Silos", despues=6)
+parrafo(der, "Diócesis de Getafe,", despues=6)
 parrafo(der, [(True, "CERTIFICA: "),
               (False, "Que según consta del acta reseñada al margen, correspondiente "
                       "al libro de Bautismos,")])
@@ -133,7 +134,7 @@ for titulo_bloque, hombre, mujer in (("PADRES", "padre", "madre"),
 
 parrafo(der, "PADRINOS: {padrinos}", despues=8)
 parrafo(der, "MINISTRO: {ministro}", despues=14)
-parrafo(der, "{lugar_expedicion}, a {expedicion_dia} de {expedicion_mes} de {expedicion_anio}",
+parrafo(der, "Pinto, a {expedicion_dia} de {expedicion_mes} de {expedicion_anio}",
         alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=0)
 # Espacio en blanco para firmar y sellar a mano tras imprimir (unos 2,7 cm).
 parrafo(der, "(Firma del Encargado del Archivo)", tam=8, fuente="Arial",
@@ -142,7 +143,7 @@ parrafo(der, "(Sello)", tam=8, fuente="Arial", alinear=WD_ALIGN_PARAGRAPH.CENTER
 
 # Pie: para otras diócesis
 parrafo(der, "(Para otras Diócesis)", tam=8, fuente="Arial", sangria=1.2, despues=2)
-parrafo(der, "Obispado de {obispado}", tam=8, fuente="Arial", despues=2)
+parrafo(der, "Obispado de", tam=8, fuente="Arial", despues=2)
 parrafo(der, "V.º B.º:", tam=8, fuente="Arial", sangria=2.5, despues=0)
 parrafo(der, "El Vicario General,", tam=8, fuente="Arial", sangria=2.2, despues=0)
 

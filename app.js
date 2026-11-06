@@ -1,6 +1,8 @@
-// Campos que se leen de la foto y se revisan en pantalla.
+// Campos que se revisan en pantalla. Todos se leen de la foto salvo los que llevan
+// `porDefecto`, que no están en el acta: parten de ese valor y se pueden cambiar.
 // `fila` agrupa campos que se muestran en la misma línea; `seccion` abre un bloque nuevo.
 const CAMPOS = [
+  { id: "encargado", etiqueta: "Encargado del archivo (sin «Don»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO },
   { id: "libro", etiqueta: "Libro", seccion: "Datos del archivo", fila: "archivo" },
   { id: "folio", etiqueta: "Folio", fila: "archivo" },
   { id: "numero", etiqueta: "Núm.", fila: "archivo" },
@@ -104,7 +106,7 @@ $("entrada-foto").addEventListener("change", async (ev) => {
 
     estado("Leyendo la partida… (puede tardar unos segundos)");
     const { campos } = await llamar("/extraer", { imagen: base64, mime: "image/jpeg" });
-    for (const { id } of CAMPOS) $("f-" + id).value = campos[id] || "";
+    for (const { id, porDefecto } of CAMPOS) $("f-" + id).value = campos[id] || porDefecto || "";
     $("formulario").hidden = false;
     $("formulario").scrollIntoView({ behavior: "smooth" });
     estado("Datos leídos. Revísalos abajo.");
@@ -114,18 +116,10 @@ $("entrada-foto").addEventListener("change", async (ev) => {
 });
 
 // --- Generar Word ---------------------------------------------------------
-// Datos fijos de la parroquia (config.js) y fecha de expedición (hoy).
+// Fecha de expedición (hoy).
 function datosFijos() {
   const hoy = new Date();
   return {
-    parroquia: CONFIG.PARROQUIA,
-    archivo_de: CONFIG.ARCHIVO_DE,
-    poblacion: CONFIG.POBLACION,
-    diocesis: CONFIG.DIOCESIS,
-    provincia: CONFIG.PROVINCIA,
-    encargado: CONFIG.ENCARGADO,
-    obispado: "",
-    lugar_expedicion: CONFIG.LUGAR_EXPEDICION,
     expedicion_dia: String(hoy.getDate()),
     expedicion_mes: hoy.toLocaleDateString("es-ES", { month: "long" }),
     expedicion_anio: String(hoy.getFullYear()),
