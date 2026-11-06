@@ -93,10 +93,11 @@ async function llamar(ruta, cuerpo) {
 
 $("entrada-foto").addEventListener("change", async (ev) => {
   const archivo = ev.target.files[0];
+  ev.target.value = ""; // permite volver a elegir el mismo archivo tras un error
   if (!archivo) return;
   if (!$("clave").value) { estado("Introduce primero la clave de acceso.", true); return; }
   try {
-    estado("Preparando la foto…");
+    estado("Preparando la imagen…");
     const { dataUrl, base64 } = await reducir(archivo);
     $("vista").src = dataUrl;
     $("vista").hidden = false;
@@ -136,10 +137,6 @@ async function generarDocx(datos) {
   if (!resp.ok) throw new Error("No se pudo cargar la plantilla");
   const zip = new PizZip(await resp.arrayBuffer());
 
-  // La plantilla pública lleva una imagen transparente de relleno; la firma y el
-  // sello reales los sirve el Worker solo a quien tiene la clave de acceso.
-  const { imagen } = await llamar("/firma", {});
-  zip.file("word/media/image1.png", imagen, { base64: true });
   const doc = new docxtemplater(zip, {
     paragraphLoop: true,
     linebreaks: true,

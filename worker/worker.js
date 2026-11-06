@@ -8,9 +8,6 @@
 //   ALLOWED_ORIGIN     origen de la web, p. ej. https://usuario.github.io
 //   MODEL              (opcional) modelo de Claude, por defecto claude-sonnet-5-5
 
-// Imagen de firma y sello (no está en el repositorio; ver tools/preparar_firma.py).
-import FIRMA_SELLO from "./firma_sello.js";
-
 const CAMPOS = [
   "libro", "folio", "numero", "nombre",
   "bautismo_dia", "bautismo_mes", "bautismo_anio",
@@ -61,7 +58,6 @@ export default {
     try {
       const cuerpo = await request.json();
       if (ruta === "/extraer") return json(await extraer(cuerpo, env));
-      if (ruta === "/firma") return json({ imagen: FIRMA_SELLO });
       return json({ error: "Ruta desconocida" }, 404);
     } catch (e) {
       return json({ error: e.message }, 500);

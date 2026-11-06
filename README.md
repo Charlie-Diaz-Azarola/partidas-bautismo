@@ -1,6 +1,6 @@
 # Partidas de Bautismo
 
-Web para móvil: se fotografía una partida de un libro de bautismos, una IA de visión lee los datos, se revisan en pantalla y se genera un documento Word a partir de una plantilla. El usuario se descarga el Word en su teléfono.
+Web: se sube una imagen de una partida de un libro de bautismos guardada en el equipo, una IA de visión lee los datos, se revisan en pantalla y se genera un documento Word a partir de una plantilla. El usuario se descarga el Word en su equipo.
 
 **No se almacena nada**: ni la foto ni el documento se guardan en ningún servidor ni en el repositorio. El repositorio solo contiene código y la plantilla en blanco, por lo que puede ser público.
 
@@ -24,11 +24,10 @@ Los datos fijos de la parroquia (población, diócesis, provincia, encargado del
 
 ## Puesta en marcha
 
-1. **Repositorio**: `Charlie-Diaz-Azarola/partidas-bautismo`. GitHub Pages gratuito exige repositorio público; no contiene datos personales ni la firma y el sello (ver «Firma y sello»).
+1. **Repositorio**: `Charlie-Diaz-Azarola/partidas-bautismo`. GitHub Pages gratuito exige repositorio público; no contiene datos personales.
 2. **Clave de Claude**: créala en la consola de Anthropic.
 3. **Worker** (requiere Node.js y una cuenta gratuita de Cloudflare):
    ```
-   python tools/preparar_firma.py "ruta/a/Firma y sello.png"   # crea worker/firma_sello.js (no se sube a GitHub)
    cd worker
    npx wrangler login
    # edita wrangler.toml: ALLOWED_ORIGIN (ya puesto: https://charlie-diaz-azarola.github.io)
@@ -37,20 +36,17 @@ Los datos fijos de la parroquia (población, diócesis, provincia, encargado del
    npx wrangler deploy
    ```
 4. **Web**: pon la URL del Worker en `config.js`, sube los cambios y activa GitHub Pages (Settings → Pages → rama `main`).
-5. Abre la web en el móvil, escribe la clave de acceso (`ACCESS_KEY`) y fotografía una partida.
+5. Abre la web, escribe la clave de acceso (`ACCESS_KEY`) y sube la imagen de una partida.
 
 ## Firma y sello
 
-La imagen de la firma y el sello de la parroquia **no está en el repositorio**. La plantilla pública lleva una imagen transparente de relleno; la imagen real vive solo en el Worker (`worker/firma_sello.js`, excluido por `.gitignore`) y se entrega por la ruta `/firma` únicamente a quien envíe la clave de acceso. La web la incrusta en el Word al generarlo.
-
-- Tras clonar el repositorio en otro equipo hay que volver a ejecutar `tools/preparar_firma.py` antes de desplegar el Worker.
-- Quien tenga la clave de acceso, o reciba un Word generado, puede extraer la imagen. Si la clave se filtra, cámbiala con `npx wrangler secret put ACCESS_KEY`.
+El Word no incluye ninguna imagen de firma ni de sello: deja el espacio en blanco. Una vez generado y corregido, el documento se imprime y se firma y sella a mano.
 
 ## Privacidad
 
 - La foto viaja del móvil al Worker de Cloudflare, que la reenvía a la API de Claude y no la guarda. Anthropic la procesa según las condiciones de retención de datos de tu cuenta de API: conviene revisarlas, porque son datos personales de bautizados.
 - El documento se genera en el navegador y solo existe en el teléfono del usuario. Si cierra la página sin descargarlo, tendrá que repetir el proceso.
-- La clave de acceso impide que terceros gasten tu crédito de la API.
+- La clave de acceso impide que terceros gasten tu crédito de la API. Si se filtra, cámbiala con `npx wrangler secret put ACCESS_KEY`.
 
 ## Limitaciones
 

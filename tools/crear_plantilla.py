@@ -8,11 +8,9 @@ diseño, siempre que se conserven los campos.
 
 Uso:  python tools/crear_plantilla.py
 """
-import io
 import re
 from pathlib import Path
 
-from PIL import Image
 from docx import Document
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_UNDERLINE
@@ -137,14 +135,9 @@ parrafo(der, "PADRINOS: {padrinos}", despues=8)
 parrafo(der, "MINISTRO: {ministro}", despues=14)
 parrafo(der, "{lugar_expedicion}, a {expedicion_dia} de {expedicion_mes} de {expedicion_anio}",
         alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=0)
-# Imagen de relleno transparente (misma proporción que la firma y el sello reales).
-# La web la sustituye por la imagen real, que sirve el Worker (word/media/image1.png).
-relleno = io.BytesIO()
-Image.new("RGBA", (133, 100), (0, 0, 0, 0)).save(relleno, "PNG")
-imagen = parrafo(der, "", alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=0)
-imagen.add_run().add_picture(relleno, width=Cm(3.6))
+# Espacio en blanco para firmar y sellar a mano tras imprimir (unos 2,7 cm).
 parrafo(der, "(Firma del Encargado del Archivo)", tam=8, fuente="Arial",
-        alinear=WD_ALIGN_PARAGRAPH.RIGHT, despues=0)
+        alinear=WD_ALIGN_PARAGRAPH.RIGHT, antes=77, despues=0)
 parrafo(der, "(Sello)", tam=8, fuente="Arial", alinear=WD_ALIGN_PARAGRAPH.CENTER, despues=14)
 
 # Pie: para otras diócesis

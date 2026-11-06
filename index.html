@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>Partidas de Bautismo</h1>
-    <p>Fotografía una partida del libro y obtén el documento de Word.</p>
+    <p>Sube la imagen de una partida del libro y obtén el documento de Word.</p>
   </header>
 
   <main>
@@ -22,9 +22,9 @@
     </section>
 
     <section id="paso-foto" class="tarjeta">
-      <label class="boton grande" for="entrada-foto">📷 Hacer foto al libro</label>
-      <input id="entrada-foto" type="file" accept="image/*" capture="environment" hidden>
-      <img id="vista" alt="Foto del libro" hidden>
+      <label class="boton grande" for="entrada-foto">📁 Subir imagen de la partida</label>
+      <input id="entrada-foto" type="file" accept="image/*" hidden>
+      <img id="vista" alt="Imagen de la partida" hidden>
       <p id="estado" role="status"></p>
     </section>
 
@@ -44,7 +44,7 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/pizzip@3.1.7/dist/pizzip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.47.7/build/docxtemplater.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docxtemplater@3.47.4/build/docxtemplater.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
