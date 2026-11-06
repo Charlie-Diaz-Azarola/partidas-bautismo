@@ -16,11 +16,10 @@ móvil ──► web (GitHub Pages) ──► Worker de Cloudflare ──► API
 | `index.html`, `app.js`, `style.css`, `config.js` | La web |
 | `plantilla/plantilla_partida.docx` | Plantilla Word en blanco con campos `{nombre}`, `{padre}`… |
 | `worker/` | Worker de Cloudflare (guarda la clave de Claude y le reenvía la foto) |
-| `tools/crear_plantilla.py` | Regenera la plantilla base |
 
-La plantilla reproduce el impreso «Certificación de partida de bautismo» (columna izquierda con datos del archivo y notas marginales, cuerpo de certificación a la derecha). Se puede abrir y retocar en Word, conservando los campos entre llaves. No incluye el logotipo ni el número de serie del impreso preimpreso. Si cambias campos, mantén sincronizados `tools/crear_plantilla.py`, `CAMPOS` en `app.js` y `CAMPOS` en `worker/worker.js`.
+La plantilla reproduce el impreso «Certificación de partida de bautismo» (columna izquierda con datos del archivo y notas marginales, cuerpo de certificación a la derecha). Se puede abrir y retocar en Word, conservando los campos entre llaves. No incluye el logotipo ni el número de serie del impreso preimpreso. Si cambias campos, mantén sincronizados `plantilla/plantilla_partida.docx`, `CAMPOS` en `app.js` y `CAMPOS` en `worker/worker.js`.
 
-La parroquia, la población, la diócesis, la provincia y el lugar de expedición van como texto fijo en la plantilla (`tools/crear_plantilla.py`). El encargado del archivo aparece en el formulario con el valor inicial de `config.js` y se puede cambiar antes de generar el documento. La fecha de expedición es la del día.
+La parroquia, la población, la diócesis, la provincia y el lugar de expedición van como texto fijo en la plantilla. El encargado del archivo aparece en el formulario con el valor inicial de `config.js` y se puede cambiar antes de generar el documento. La fecha de expedición es la del día.
 
 ## Puesta en marcha
 
