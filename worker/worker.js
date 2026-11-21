@@ -9,7 +9,7 @@
 //   MODEL              (opcional) modelo de Claude, por defecto claude-sonnet-5-5
 
 const CAMPOS = [
-  "libro", "folio", "numero", "nombre",
+  "libro", "folio", "numero", "nombre", "sexo",
   "bautismo_dia", "bautismo_mes", "bautismo_anio",
   "nacimiento_dia", "nacimiento_mes", "nacimiento_anio",
   "calle", "calle_numero", "natural_de", "natural_diocesis", "natural_provincia",
@@ -20,12 +20,13 @@ const CAMPOS = [
 ];
 
 const PROMPT = `Eres un paleógrafo experto en libros sacramentales españoles.
-La imagen es una página (o una partida) de un libro de bautismos. Localiza la partida principal y transcribe sus datos para rellenar una certificación de bautismo.
+La imagen es una página (o una partida) de un libro de bautismos. Localiza la partida principal y transcribe sus datos para rellenar una certificación o un volante de bautismo.
 Responde SOLO con un objeto JSON, sin texto adicional ni bloques de código, con exactamente estas claves (cadena vacía si el dato no aparece o no se lee):
 ${CAMPOS.map((c) => `- ${c}`).join("\n")}
 Significado:
 - libro, folio, numero: datos de localización de la partida en el archivo.
 - nombre: nombre completo del bautizado, sin «D.», «Don» ni «Doña».
+- sexo: "H" si el bautizado es varón, "M" si es mujer (dedúcelo del nombre, de «hijo/hija» o de la concordancia del texto); cadena vacía si no está claro.
 - bautismo_* y nacimiento_*: día en cifras (p. ej. "3"), mes en letra minúscula (p. ej. "mayo") y año en cifras (p. ej. "1921").
 - calle y calle_numero: domicilio de los padres o del nacido.
 - natural_de, natural_diocesis, natural_provincia: lugar de procedencia/naturaleza del bautizado.
@@ -95,5 +96,6 @@ async function extraer({ imagen, mime }, env) {
   const bruto = JSON.parse(m[0]);
   const campos = {};
   for (const c of CAMPOS) campos[c] = typeof bruto[c] === "string" ? bruto[c] : "";
+  if (!["H", "M"].includes(campos.sexo)) campos.sexo = "";
   return { campos };
 }

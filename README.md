@@ -1,12 +1,12 @@
 # Partidas de Bautismo
 
-Web: se sube una imagen de una partida de un libro de bautismos guardada en el equipo, una IA de visión lee los datos, se revisan en pantalla y se genera un documento Word a partir de una plantilla. El usuario se descarga el Word en su equipo.
+Web: se sube una imagen de una partida de un libro de bautismos guardada en el equipo, una IA de visión lee los datos, se revisan en pantalla y se genera un documento Word a partir de una plantilla. Antes de subir la imagen se elige el documento: **partida** (certificación) o **volante** de bautismo. El usuario se descarga el Word en su equipo.
 
 **No se almacena nada**: ni la foto ni el documento se guardan en ningún servidor ni en el repositorio. El repositorio solo contiene código y la plantilla en blanco, por lo que puede ser público.
 
 ```
 móvil ──► web (GitHub Pages) ──► Worker de Cloudflare ──► API de Claude (lee la foto)
-                 └─ rellena plantilla/plantilla_partida.docx en el propio navegador
+                 └─ rellena plantilla/plantilla_partida.docx o plantilla_volante.docx en el propio navegador
 ```
 
 ## Estructura
@@ -14,10 +14,13 @@ móvil ──► web (GitHub Pages) ──► Worker de Cloudflare ──► API
 | Ruta | Contenido |
 |---|---|
 | `index.html`, `app.js`, `style.css`, `config.js` | La web |
-| `plantilla/plantilla_partida.docx` | Plantilla Word en blanco con campos `{nombre}`, `{padre}`… |
+| `plantilla/plantilla_partida.docx` | Plantilla Word en blanco de la partida, con campos `{nombre}`, `{padre}`… |
+| `plantilla/plantilla_volante.docx` | Plantilla Word en blanco del volante (modelo de la parroquia, con su escudo) |
 | `worker/` | Worker de Cloudflare (guarda la clave de Claude y le reenvía la foto) |
 
-La plantilla reproduce el impreso «Certificación de partida de bautismo» (columna izquierda con datos del archivo y notas marginales, cuerpo de certificación a la derecha). Se puede abrir y retocar en Word, conservando los campos entre llaves. No incluye el logotipo ni el número de serie del impreso preimpreso. Si cambias campos, mantén sincronizados `plantilla/plantilla_partida.docx`, `CAMPOS` en `app.js` y `CAMPOS` en `worker/worker.js`.
+La plantilla reproduce el impreso «Certificación de partida de bautismo» (columna izquierda con datos del archivo y notas marginales, cuerpo de certificación a la derecha). Se puede abrir y retocar en Word, conservando los campos entre llaves. No incluye el logotipo ni el número de serie del impreso preimpreso. Si cambias campos, mantén sincronizados las plantillas, `CAMPOS` en `app.js` y `CAMPOS` en `worker/worker.js`.
+
+El volante usa la misma lectura de la foto que la partida, pero el formulario solo muestra sus campos (en `app.js`, `solo: "partida"` o `solo: "volante"` marca los campos exclusivos de cada documento). Su plantilla reproduce el modelo «Volante de Bautismo» de la parroquia. El campo `sexo` (H/M, leído de la foto y corregible) decide «D. … hijo» o «Dª. … hija» (`{tratamiento}` y `{hijo}`); si queda sin determinar, se escribe «D./Dª. … hijo/a». El volante no lleva el nombre del encargado ni notas marginales.
 
 La parroquia, la población, la diócesis, la provincia y el lugar de expedición van como texto fijo en la plantilla. El encargado del archivo aparece en el formulario con el valor inicial de `config.js` y se puede cambiar antes de generar el documento. La fecha de expedición es la del día.
 

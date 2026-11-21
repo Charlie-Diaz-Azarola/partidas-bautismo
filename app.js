@@ -1,38 +1,48 @@
+// Documentos que se pueden generar a partir de la misma lectura de la foto.
+const TIPOS = {
+  partida: { plantilla: "plantilla/plantilla_partida.docx", prefijo: "Partida", boton: "Generar partida", listo: "Partida lista" },
+  volante: { plantilla: "plantilla/plantilla_volante.docx", prefijo: "Volante", boton: "Generar volante", listo: "Volante listo" },
+};
+
 // Campos que se revisan en pantalla. Todos se leen de la foto salvo los que llevan
 // `porDefecto`, que no están en el acta: parten de ese valor y se pueden cambiar.
-// `fila` agrupa campos que se muestran en la misma línea; `seccion` abre un bloque nuevo.
+// `fila` agrupa campos que se muestran en la misma línea; `seccion` abre un bloque nuevo
+// (un texto, o un texto por tipo de documento). `solo` limita el campo a un tipo de
+// documento; sin `solo`, aparece en todos. `opciones` lo convierte en una lista desplegable.
 const CAMPOS = [
-  { id: "encargado", etiqueta: "Encargado del archivo (sin «D./Dª.»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO },
+  { id: "encargado", etiqueta: "Encargado del archivo (sin «D./Dª.»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO, solo: "partida" },
   { id: "libro", etiqueta: "Libro", seccion: "Datos del archivo", fila: "archivo" },
   { id: "folio", etiqueta: "Folio", fila: "archivo" },
   { id: "numero", etiqueta: "Núm.", fila: "archivo" },
   { id: "nombre", etiqueta: "Bautizado/a (sin «D.»)", seccion: "Bautizado/a" },
+  { id: "sexo", etiqueta: "Sexo", solo: "volante", opciones: [
+    ["", "Sin determinar (D./Dª. … hijo/a)"], ["H", "Varón (D. … hijo)"], ["M", "Mujer (Dª. … hija)"]] },
   { id: "bautismo_dia", etiqueta: "Bautismo: día", seccion: "Fecha de bautismo", fila: "bautismo" },
   { id: "bautismo_mes", etiqueta: "mes", fila: "bautismo" },
   { id: "bautismo_anio", etiqueta: "año", fila: "bautismo" },
   { id: "nacimiento_dia", etiqueta: "Nacimiento: día", seccion: "Nacimiento", fila: "nacimiento" },
   { id: "nacimiento_mes", etiqueta: "mes", fila: "nacimiento" },
   { id: "nacimiento_anio", etiqueta: "año", fila: "nacimiento" },
-  { id: "calle", etiqueta: "En la calle" },
-  { id: "calle_numero", etiqueta: "N.º" },
-  { id: "natural_de", etiqueta: "Natural de" },
-  { id: "natural_diocesis", etiqueta: "Diócesis de" },
-  { id: "natural_provincia", etiqueta: "Provincia de" },
+  { id: "calle", etiqueta: "En la calle", solo: "partida" },
+  { id: "calle_numero", etiqueta: "N.º", solo: "partida" },
+  { id: "natural_de", etiqueta: "Natural de", solo: "partida" },
+  { id: "natural_diocesis", etiqueta: "Diócesis de", solo: "partida" },
+  { id: "natural_provincia", etiqueta: "Provincia de", solo: "partida" },
   { id: "padre", etiqueta: "Padre: D.", seccion: "Padres" },
-  { id: "padre_natural", etiqueta: "natural de" },
+  { id: "padre_natural", etiqueta: "natural de", solo: "partida" },
   { id: "madre", etiqueta: "Madre: D.ª" },
-  { id: "madre_natural", etiqueta: "natural de" },
-  { id: "abuelo_paterno", etiqueta: "Abuelo paterno: D.", seccion: "Abuelos paternos" },
-  { id: "abuelo_paterno_natural", etiqueta: "natural de" },
-  { id: "abuela_paterna", etiqueta: "Abuela paterna: D.ª" },
-  { id: "abuela_paterna_natural", etiqueta: "natural de" },
-  { id: "abuelo_materno", etiqueta: "Abuelo materno: D.", seccion: "Abuelos maternos" },
-  { id: "abuelo_materno_natural", etiqueta: "natural de" },
-  { id: "abuela_materna", etiqueta: "Abuela materna: D.ª" },
-  { id: "abuela_materna_natural", etiqueta: "natural de" },
-  { id: "padrinos", etiqueta: "Padrinos", seccion: "Padrinos y ministro" },
+  { id: "madre_natural", etiqueta: "natural de", solo: "partida" },
+  { id: "abuelo_paterno", etiqueta: "Abuelo paterno: D.", seccion: "Abuelos paternos", solo: "partida" },
+  { id: "abuelo_paterno_natural", etiqueta: "natural de", solo: "partida" },
+  { id: "abuela_paterna", etiqueta: "Abuela paterna: D.ª", solo: "partida" },
+  { id: "abuela_paterna_natural", etiqueta: "natural de", solo: "partida" },
+  { id: "abuelo_materno", etiqueta: "Abuelo materno: D.", seccion: "Abuelos maternos", solo: "partida" },
+  { id: "abuelo_materno_natural", etiqueta: "natural de", solo: "partida" },
+  { id: "abuela_materna", etiqueta: "Abuela materna: D.ª", solo: "partida" },
+  { id: "abuela_materna_natural", etiqueta: "natural de", solo: "partida" },
+  { id: "padrinos", etiqueta: "Padrinos", seccion: { partida: "Padrinos y ministro", volante: "Ministro" }, solo: "partida" },
   { id: "ministro", etiqueta: "Ministro" },
-  { id: "notas_marginales", etiqueta: "Notas marginales", largo: true, seccion: "Notas" },
+  { id: "notas_marginales", etiqueta: "Notas marginales", largo: true, seccion: "Notas", solo: "partida" },
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -42,6 +52,25 @@ const estado = (texto, error = false) => {
 };
 
 let urlDescarga = "";
+// Datos leídos de la foto y corregidos en pantalla. Se conservan aunque se cambie
+// de tipo de documento, porque entonces el formulario se pinta con otros campos.
+const valores = {};
+
+// --- Tipo de documento ----------------------------------------------------
+const tipo = () => document.querySelector('input[name="tipo"]:checked').value;
+const camposDelTipo = () => CAMPOS.filter((c) => !c.solo || c.solo === tipo());
+
+try {
+  const guardado = localStorage.getItem("tipo");
+  if (TIPOS[guardado]) document.querySelector(`input[name="tipo"][value="${guardado}"]`).checked = true;
+} catch {}
+for (const radio of document.querySelectorAll('input[name="tipo"]')) {
+  radio.addEventListener("change", () => {
+    try { localStorage.setItem("tipo", tipo()); } catch {}
+    guardarValores();
+    pintarFormulario();
+  });
+}
 
 // --- Acceso ---------------------------------------------------------------
 try { $("clave").value = localStorage.getItem("clave") || ""; } catch {}
@@ -50,22 +79,42 @@ $("clave").addEventListener("change", () => {
 });
 
 // --- Formulario -----------------------------------------------------------
+function control(c) {
+  if (c.opciones) {
+    return `<select id="f-${c.id}">${c.opciones
+      .map(([valor, texto]) => `<option value="${valor}">${texto}</option>`).join("")}</select>`;
+  }
+  return c.largo ? `<textarea id="f-${c.id}"></textarea>` : `<input type="text" id="f-${c.id}">`;
+}
+
+// Pinta los campos del tipo de documento elegido y los rellena con `valores`.
 function pintarFormulario() {
   let html = "";
   let filaAbierta = null;
+  let seccionPendiente = null; // se muestra aunque el primer campo de la sección no sea de este tipo
   const cerrarFila = () => { if (filaAbierta) { html += "</div>"; filaAbierta = null; } };
   for (const c of CAMPOS) {
-    if (c.seccion) { cerrarFila(); html += `<h3>${c.seccion}</h3>`; }
+    if (c.seccion) seccionPendiente = typeof c.seccion === "string" ? c.seccion : c.seccion[tipo()];
+    if (c.solo && c.solo !== tipo()) continue;
+    if (seccionPendiente) { cerrarFila(); html += `<h3>${seccionPendiente}</h3>`; seccionPendiente = null; }
     if (c.fila !== filaAbierta) {
       cerrarFila();
       if (c.fila) { html += '<div class="fila">'; filaAbierta = c.fila; }
     }
-    html += `<label>${c.etiqueta}${c.largo
-      ? `<textarea id="f-${c.id}"></textarea>`
-      : `<input type="text" id="f-${c.id}">`}</label>`;
+    html += `<label>${c.etiqueta}${control(c)}</label>`;
   }
   cerrarFila();
   $("campos").innerHTML = html;
+  for (const c of camposDelTipo()) $("f-" + c.id).value = valores[c.id] ?? c.porDefecto ?? "";
+  $("generar").textContent = TIPOS[tipo()].boton;
+}
+
+// Copia a `valores` lo que hay escrito en el formulario.
+function guardarValores() {
+  for (const c of camposDelTipo()) {
+    const el = $("f-" + c.id);
+    if (el) valores[c.id] = el.value;
+  }
 }
 pintarFormulario();
 
@@ -106,7 +155,8 @@ $("entrada-foto").addEventListener("change", async (ev) => {
 
     estado("Leyendo la partida… (puede tardar unos segundos)");
     const { campos } = await llamar("/extraer", { imagen: base64, mime: "image/jpeg" });
-    for (const { id, porDefecto } of CAMPOS) $("f-" + id).value = campos[id] || porDefecto || "";
+    for (const c of CAMPOS) valores[c.id] = campos[c.id] || c.porDefecto || "";
+    pintarFormulario();
     $("formulario").hidden = false;
     $("formulario").scrollIntoView({ behavior: "smooth" });
     estado("Datos leídos. Revísalos abajo.");
@@ -126,8 +176,8 @@ function datosFijos() {
   };
 }
 
-async function generarDocx(datos) {
-  const resp = await fetch("plantilla/plantilla_partida.docx");
+async function generarDocx(plantilla, datos) {
+  const resp = await fetch(plantilla);
   if (!resp.ok) throw new Error("No se pudo cargar la plantilla");
   const zip = new PizZip(await resp.arrayBuffer());
 
@@ -145,19 +195,25 @@ async function generarDocx(datos) {
 
 $("formulario").addEventListener("submit", async (ev) => {
   ev.preventDefault();
+  guardarValores();
+  const t = TIPOS[tipo()];
   const datos = datosFijos();
-  for (const { id } of CAMPOS) datos[id] = $("f-" + id).value.trim();
+  for (const { id } of camposDelTipo()) datos[id] = valores[id].trim();
+  // Volante: «D. … hijo» o «Dª. … hija» según el sexo; sin determinar, «D./Dª. … hijo/a».
+  datos.tratamiento = { H: "D.", M: "Dª." }[datos.sexo] || "D./Dª.";
+  datos.hijo = { H: "hijo", M: "hija" }[datos.sexo] || "hijo/a";
 
   try {
     estado("Generando el documento…");
-    const blob = await generarDocx(datos);
-    const nombreBase = (datos.nombre || "partida").normalize("NFD")
+    const blob = await generarDocx(t.plantilla, datos);
+    const nombreBase = (datos.nombre || tipo()).normalize("NFD")
       .replace(/[̀-ͯ]/g, "").replace(/[^\w]+/g, "_");
 
     if (urlDescarga) URL.revokeObjectURL(urlDescarga);
     urlDescarga = URL.createObjectURL(blob);
     $("descarga").href = urlDescarga;
-    $("descarga").download = `Partida_${nombreBase}.docx`;
+    $("descarga").download = `${t.prefijo}_${nombreBase}.docx`;
+    $("titulo-resultado").textContent = t.listo;
     $("formulario").hidden = true;
     $("resultado").hidden = false;
   } catch (e) {
@@ -170,6 +226,8 @@ $("nueva").addEventListener("click", () => {
   $("formulario").hidden = true;
   $("vista").hidden = true;
   $("entrada-foto").value = "";
+  for (const id in valores) delete valores[id];
+  pintarFormulario();
   estado("");
   window.scrollTo({ top: 0, behavior: "smooth" });
 });

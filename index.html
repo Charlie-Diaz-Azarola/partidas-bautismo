@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>Partidas de Bautismo</h1>
-    <p>Sube la imagen de una partida del libro y obtén el documento de Word.</p>
+    <p>Sube la imagen de una partida del libro y obtén la partida o el volante de bautismo en Word.</p>
   </header>
 
   <main>
@@ -22,6 +22,11 @@
     </section>
 
     <section id="paso-foto" class="tarjeta">
+      <fieldset class="selector-tipo">
+        <legend>Documento que quieres obtener</legend>
+        <label><input type="radio" name="tipo" value="partida" checked><span>Partida de bautismo</span></label>
+        <label><input type="radio" name="tipo" value="volante"><span>Volante de bautismo</span></label>
+      </fieldset>
       <label class="boton grande" for="entrada-foto">📁 Subir imagen de la partida</label>
       <input id="entrada-foto" type="file" accept="image/*" hidden>
       <img id="vista" alt="Imagen de la partida" hidden>
@@ -32,14 +37,14 @@
       <h2>Revisa los datos</h2>
       <p class="aviso">La lectura automática puede fallar con letra manuscrita. Corrige lo necesario antes de generar el documento.</p>
       <div id="campos"></div>
-      <button type="submit" class="boton grande">Generar partida</button>
+      <button id="generar" type="submit" class="boton grande">Generar partida</button>
     </form>
 
     <section id="resultado" class="tarjeta" hidden>
-      <h2>Partida lista</h2>
+      <h2 id="titulo-resultado">Partida lista</h2>
       <a id="descarga" class="boton grande">⬇️ Descargar Word</a>
       <p class="aviso">El documento no se guarda en ningún servidor: descárgalo ahora.</p>
-      <button id="nueva" type="button" class="boton secundario">Nueva partida</button>
+      <button id="nueva" type="button" class="boton secundario">Nuevo documento</button>
     </section>
   </main>
 

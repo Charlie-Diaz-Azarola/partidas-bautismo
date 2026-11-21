@@ -36,7 +36,7 @@ h2 { margin: 0 0 12px; font-size: 1.15rem; }
   margin-bottom: 16px;
 }
 label { display: block; font-weight: 600; margin-bottom: 12px; }
-input[type=text], input[type=password], textarea {
+input[type=text], input[type=password], textarea, select {
   display: block;
   width: 100%;
   margin-top: 4px;
@@ -71,3 +71,26 @@ small, .aviso { color: var(--suave); }
 [hidden] { display: none !important; }
 h3 { margin: 16px 0 8px; font-size: 1rem; color: var(--acento); }
 .fila { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.selector-tipo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+.selector-tipo legend { font-weight: 600; margin-bottom: 8px; padding: 0; }
+.selector-tipo label { position: relative; margin: 0; }
+.selector-tipo input { position: absolute; opacity: 0; }
+.selector-tipo span {
+  display: block;
+  height: 100%;
+  padding: 10px;
+  text-align: center;
+  color: var(--acento);
+  border: 1px solid var(--acento);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.selector-tipo input:checked + span { color: #fff; background: var(--acento); }
+.selector-tipo input:focus-visible + span { outline: 2px solid var(--texto); outline-offset: 2px; }
