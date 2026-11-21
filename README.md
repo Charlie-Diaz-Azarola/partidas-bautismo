@@ -24,6 +24,10 @@ El volante usa la misma lectura de la foto que la partida, pero el formulario so
 
 La parroquia, la población, la diócesis, la provincia y el lugar de expedición van como texto fijo en la plantilla. El encargado del archivo aparece en el formulario con el valor inicial de `config.js` y se puede cambiar antes de generar el documento. La fecha de expedición es la del día.
 
+## Caché del navegador
+
+`index.html` carga `style.css`, `config.js` y `app.js` con un número de versión (`app.js?v=2`). Cuando cambie alguno de esos archivos, sube el número en `index.html` (`v=3`, `v=4`…): si no, el navegador puede seguir usando la versión guardada en caché y mezclarla con un `index.html` nuevo.
+
 ## Puesta en marcha
 
 1. **Repositorio**: `Charlie-Diaz-Azarola/partidas-bautismo`. GitHub Pages gratuito exige repositorio público; no contiene datos personales.
