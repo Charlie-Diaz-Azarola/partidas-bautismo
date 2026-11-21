@@ -9,14 +9,17 @@ const TIPOS = {
 // `fila` agrupa campos que se muestran en la misma línea; `seccion` abre un bloque nuevo
 // (un texto, o un texto por tipo de documento). `solo` limita el campo a un tipo de
 // documento; sin `solo`, aparece en todos. `opciones` lo convierte en una lista desplegable.
+// `aMano` deja el campo en blanco, sin el dato leído de la foto, en ese tipo de documento.
 const CAMPOS = [
   { id: "encargado", etiqueta: "Encargado del archivo (sin «D./Dª.»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO, solo: "partida" },
-  { id: "libro", etiqueta: "Libro", seccion: "Datos del archivo", fila: "archivo" },
-  { id: "folio", etiqueta: "Folio", fila: "archivo" },
+  { id: "encargado_tratamiento", etiqueta: "Tratamiento del encargado", porDefecto: CONFIG.ENCARGADO_TRATAMIENTO, solo: "partida", opciones: [
+    ["D.", "D. (encargado)"], ["Dª.", "Dª. (encargada)"]] },
+  { id: "libro", etiqueta: "Libro", seccion: "Datos del archivo", fila: "archivo", aMano: "volante" },
+  { id: "folio", etiqueta: "Folio", fila: "archivo", aMano: "volante" },
   { id: "numero", etiqueta: "Núm.", fila: "archivo" },
   { id: "nombre", etiqueta: "Bautizado/a (sin «D.»)", seccion: "Bautizado/a" },
-  { id: "sexo", etiqueta: "Sexo", solo: "volante", opciones: [
-    ["", "Sin determinar (D./Dª. … hijo/a)"], ["H", "Varón (D. … hijo)"], ["M", "Mujer (Dª. … hija)"]] },
+  { id: "sexo", etiqueta: "Sexo", opciones: [
+    ["", "Sin determinar (D./Dª.)"], ["H", "Varón (D.)"], ["M", "Mujer (Dª.)"]] },
   { id: "bautismo_dia", etiqueta: "Bautismo: día", seccion: "Fecha de bautismo", fila: "bautismo" },
   { id: "bautismo_mes", etiqueta: "mes", fila: "bautismo" },
   { id: "bautismo_anio", etiqueta: "año", fila: "bautismo" },
@@ -155,7 +158,9 @@ $("entrada-foto").addEventListener("change", async (ev) => {
 
     estado("Leyendo la partida… (puede tardar unos segundos)");
     const { campos } = await llamar("/extraer", { imagen: base64, mime: "image/jpeg" });
-    for (const c of CAMPOS) valores[c.id] = campos[c.id] || c.porDefecto || "";
+    for (const c of CAMPOS) {
+      valores[c.id] = c.aMano === tipo() ? "" : campos[c.id] || c.porDefecto || "";
+    }
     pintarFormulario();
     $("formulario").hidden = false;
     $("formulario").scrollIntoView({ behavior: "smooth" });
@@ -199,9 +204,13 @@ $("formulario").addEventListener("submit", async (ev) => {
   const t = TIPOS[tipo()];
   const datos = datosFijos();
   for (const { id } of camposDelTipo()) datos[id] = valores[id].trim();
-  // Volante: «D. … hijo» o «Dª. … hija» según el sexo; sin determinar, «D./Dª. … hijo/a».
+  // Según el sexo del bautizado: «D. … hijo … BAUTIZADO» o «Dª. … hija … BAUTIZADA»;
+  // sin determinar, «D./Dª. … hijo/a … BAUTIZADO/A».
   datos.tratamiento = { H: "D.", M: "Dª." }[datos.sexo] || "D./Dª.";
   datos.hijo = { H: "hijo", M: "hija" }[datos.sexo] || "hijo/a";
+  datos.bautizado = { H: "BAUTIZADO", M: "BAUTIZADA" }[datos.sexo] || "BAUTIZADO/A";
+  // Partida: «encargado» o «encargada» del Archivo según el tratamiento elegido.
+  datos.encargado_cargo = datos.encargado_tratamiento === "Dª." ? "encargada" : "encargado";
 
   try {
     estado("Generando el documento…");

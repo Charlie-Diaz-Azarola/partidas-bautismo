@@ -5,4 +5,6 @@ window.CONFIG = {
 
   // Valor inicial del encargado del archivo en el formulario (se puede cambiar allí).
   ENCARGADO: "Carlos Díaz Azarola",
+  // Tratamiento inicial del encargado: "D." o "Dª.".
+  ENCARGADO_TRATAMIENTO: "D.",
 };
