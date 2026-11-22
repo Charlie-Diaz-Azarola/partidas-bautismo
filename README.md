@@ -50,9 +50,42 @@ El Word no incluye ninguna imagen de firma ni de sello: deja el espacio en blanc
 
 ## Privacidad
 
-- La imagen viaja del equipo del usuario al Worker de Cloudflare, que la reenvía a la API de Claude y no la guarda. Anthropic la procesa según las condiciones de retención de datos de tu cuenta de API: conviene revisarlas, porque son datos personales de bautizados.
+Las partidas contienen datos personales y el bautismo revela una creencia religiosa, que es una categoría especial de datos (art. 9 del RGPD). Se aplican el RGPD, la LOPDGDD y el Decreto General de la Conferencia Episcopal Española sobre protección de datos (2018). La parroquia es la responsable del tratamiento; Anthropic y Cloudflare actúan como encargados.
+
+### Recorrido de los datos
+
+- La imagen viaja del equipo del usuario al Worker de Cloudflare, que la reenvía a la API de Claude y no la guarda. El Worker no escribe registros (no hay `console.log`) y `wrangler.toml` no activa Workers Logs.
+- GitHub Pages solo sirve el código de la web: no recibe imágenes ni datos.
 - El documento se genera en el navegador y solo existe en el equipo del usuario. Si cierra la página sin descargarlo, tendrá que repetir el proceso.
+
+### Anthropic (API de Claude)
+
+- El contrato de encargo (DPA), con cláusulas contractuales tipo de la UE, queda incluido al aceptar las Commercial Terms. Anthropic actúa como encargado y, para clientes del Espacio Económico Europeo, la empresa contratante es Anthropic Ireland.
+- No entrena modelos con los datos enviados.
+- Borra entradas y salidas en 30 días. Excepciones: hasta 2 años si sus filtros automáticos marcan la consulta, y 5 años si se envía una valoración (pulgar arriba o abajo, aviso de error).
+- El tratamiento se hace en EE. UU. (no hay residencia de datos en la UE); la transferencia está cubierta por las cláusulas contractuales tipo.
+- Se puede pedir retención cero (ZDR) al equipo comercial de Anthropic; el modelo usado (`claude-sonnet-5-5`) la admite.
+
+### Cloudflare (Worker)
+
+- Su DPA se incorpora al contrato del plan gratuito. Cloudflare actúa como encargado, está certificado en el Marco de Privacidad de Datos UE‑EE. UU. y tiene como respaldo las cláusulas contractuales tipo.
+
+### Pendiente (consultar con el Delegado de Protección de Datos de la diócesis de Getafe)
+
+- Inscribir el tratamiento en el registro de actividades de la parroquia, con Anthropic y Cloudflare como encargados y la transferencia a EE. UU.
+- Titular de la cuenta de la API: lo ideal es que sea la parroquia; si no, hace falta un contrato de encargo entre la parroquia y el titular.
+- El anexo del DPA de Anthropic declara «categorías especiales: ninguna», aunque se envían datos religiosos: valorar esta discrepancia.
+- Mencionar estos encargados y la transferencia en el aviso de privacidad de la parroquia.
+- Valorar si se pide la retención cero (ZDR).
+
+### Buenas prácticas
+
+- Recortar la imagen a la partida que se necesita antes de subirla: una página entera envía también los datos de las demás partidas.
+- No enviar valoraciones ni usar la consola de Anthropic (Console, Workbench) con partidas reales.
+- No activar Workers Logs ni añadir registros que incluyan el cuerpo de la petición.
 - La clave de acceso impide que terceros gasten tu crédito de la API. Si se filtra, cámbiala con `npx wrangler secret put ACCESS_KEY`.
+
+Condiciones revisadas el 22-11-2026: Commercial Terms de Anthropic (17-06-2025), DPA de Anthropic (24-02-2025) y DPA de Cloudflare (versión 6.4, 03-04-2026). Conviene volver a revisarlas si cambian.
 
 ## Limitaciones
 
