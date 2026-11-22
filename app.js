@@ -1,15 +1,15 @@
-// Documentos que se pueden generar a partir de la misma lectura de la foto.
+// Documentos que se pueden generar a partir de la misma lectura de la imagen.
 const TIPOS = {
   partida: { plantilla: "plantilla/plantilla_partida.docx", prefijo: "Partida", boton: "Generar partida", listo: "Partida lista" },
   volante: { plantilla: "plantilla/plantilla_volante.docx", prefijo: "Volante", boton: "Generar volante", listo: "Volante listo" },
 };
 
-// Campos que se revisan en pantalla. Todos se leen de la foto salvo los que llevan
+// Campos que se revisan en pantalla. Todos se leen de la imagen salvo los que llevan
 // `porDefecto`, que no están en el acta: parten de ese valor y se pueden cambiar.
 // `fila` agrupa campos que se muestran en la misma línea; `seccion` abre un bloque nuevo
 // (un texto, o un texto por tipo de documento). `solo` limita el campo a un tipo de
 // documento; sin `solo`, aparece en todos. `opciones` lo convierte en una lista desplegable.
-// `aMano` deja el campo en blanco, sin el dato leído de la foto, en ese tipo de documento.
+// `aMano` deja el campo en blanco, sin el dato leído de la imagen, en ese tipo de documento.
 const CAMPOS = [
   { id: "encargado", etiqueta: "Encargado del archivo (sin «D./Dª.»)", seccion: "Encargado del archivo", porDefecto: CONFIG.ENCARGADO, solo: "partida" },
   { id: "encargado_tratamiento", etiqueta: "Tratamiento del encargado", porDefecto: CONFIG.ENCARGADO_TRATAMIENTO, solo: "partida", opciones: [
@@ -55,7 +55,7 @@ const estado = (texto, error = false) => {
 };
 
 let urlDescarga = "";
-// Datos leídos de la foto y corregidos en pantalla. Se conservan aunque se cambie
+// Datos leídos de la imagen y corregidos en pantalla. Se conservan aunque se cambie
 // de tipo de documento, porque entonces el formulario se pinta con otros campos.
 const valores = {};
 
@@ -121,8 +121,8 @@ function guardarValores() {
 }
 pintarFormulario();
 
-// --- Foto -----------------------------------------------------------------
-// Reduce la foto para acelerar la subida y el análisis (lado mayor 2000 px).
+// --- Imagen ---------------------------------------------------------------
+// Reduce la imagen para acelerar la subida y el análisis (lado mayor 2000 px).
 async function reducir(archivo) {
   const bmp = await createImageBitmap(archivo);
   const k = Math.min(1, 2000 / Math.max(bmp.width, bmp.height));

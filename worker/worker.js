@@ -1,6 +1,6 @@
 // Cloudflare Worker: intermediario seguro entre la web y la API de Claude.
 // La clave vive como secreto del Worker y nunca llega al navegador.
-// No almacena nada: la foto se reenvía a Claude y se descarta.
+// No almacena nada: la imagen se reenvía a Claude y se descarta.
 //
 // Secretos / variables (ver README.md):
 //   ANTHROPIC_API_KEY  clave de la API de Claude
