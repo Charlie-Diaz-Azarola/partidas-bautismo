@@ -81,15 +81,14 @@ for (const radio of document.querySelectorAll('input[name="tipo"]')) {
 try { localStorage.removeItem("clave"); } catch {}
 function mostrarAcceso(visible) {
   $("acceso").hidden = !visible;
-  $("cambiar-clave").hidden = visible;
   if (visible) $("clave").focus();
 }
 // Al ocultarse el formulario tras enviarlo, el navegador ofrece guardar la clave.
+// Vuelve a aparecer si falta la clave o el Worker la rechaza.
 $("acceso").addEventListener("submit", (ev) => {
   ev.preventDefault();
   mostrarAcceso(false);
 });
-$("cambiar-clave").addEventListener("click", () => mostrarAcceso(true));
 
 // --- Formulario -----------------------------------------------------------
 function control(c) {
