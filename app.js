@@ -79,9 +79,15 @@ for (const radio of document.querySelectorAll('input[name="tipo"]')) {
 // La web no guarda la clave: si se quiere, la recuerda el gestor de contraseñas
 // del navegador. Se borra la que guardaban versiones anteriores en localStorage.
 try { localStorage.removeItem("clave"); } catch {}
-function mostrarAcceso(visible) {
+// Al principio solo se ve el formulario de la clave; el paso de la imagen aparece
+// cuando se acepta. `mensaje` es el aviso de error que se muestra bajo la clave.
+function mostrarAcceso(visible, mensaje = "") {
   $("acceso").hidden = !visible;
-  if (visible) $("clave").focus();
+  $("paso-foto").hidden = visible;
+  $("error-acceso").textContent = mensaje;
+  $("error-acceso").hidden = !mensaje;
+  if (visible) $("clave").select();
+  else estado("");
 }
 // «Entrar» comprueba la clave con el Worker. Este valida la clave antes de mirar
 // la ruta, así que /comprobar responde 401 si es incorrecta y 404 si es correcta,
@@ -90,9 +96,8 @@ function mostrarAcceso(visible) {
 // Worker la rechaza más tarde.
 $("acceso").addEventListener("submit", async (ev) => {
   ev.preventDefault();
-  const aviso = $("error-acceso");
   const boton = $("acceso").querySelector("button");
-  aviso.hidden = true;
+  $("error-acceso").hidden = true;
   boton.disabled = true;
   try {
     const resp = await fetch(CONFIG.WORKER_URL + "/comprobar", {
@@ -103,9 +108,7 @@ $("acceso").addEventListener("submit", async (ev) => {
     if (resp.status === 401) throw new Error("Clave de acceso incorrecta.");
     mostrarAcceso(false);
   } catch (e) {
-    aviso.textContent = e instanceof TypeError ? "No se pudo comprobar la clave: revisa la conexión." : e.message;
-    aviso.hidden = false;
-    $("clave").select();
+    mostrarAcceso(true, e instanceof TypeError ? "No se pudo comprobar la clave: revisa la conexión." : e.message);
   } finally {
     boton.disabled = false;
   }
@@ -171,7 +174,7 @@ async function llamar(ruta, cuerpo) {
     body: JSON.stringify(cuerpo),
   });
   const datos = await resp.json().catch(() => ({}));
-  if (resp.status === 401) mostrarAcceso(true);
+  if (resp.status === 401) mostrarAcceso(true, "Clave de acceso incorrecta.");
   if (!resp.ok) throw new Error(datos.error || `Error ${resp.status}`);
   return datos;
 }
@@ -181,8 +184,7 @@ $("entrada-foto").addEventListener("change", async (ev) => {
   ev.target.value = ""; // permite volver a elegir el mismo archivo tras un error
   if (!archivo) return;
   if (!$("clave").value) {
-    estado("Introduce primero la clave de acceso.", true);
-    mostrarAcceso(true);
+    mostrarAcceso(true, "Introduce primero la clave de acceso.");
     return;
   }
   try {
