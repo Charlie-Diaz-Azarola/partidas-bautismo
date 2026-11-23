@@ -67,7 +67,7 @@ small, .aviso { color: var(--suave); }
 .boton.secundario { background: transparent; color: var(--acento); border: 1px solid var(--acento); margin-top: 12px; }
 #vista { display: block; width: 100%; margin-top: 12px; border-radius: 8px; }
 #estado { margin: 12px 0 0; color: var(--suave); }
-#estado.error { color: #c0392b; }
+#estado.error, #error-acceso { color: #c0392b; }
 [hidden] { display: none !important; }
 h3 { margin: 16px 0 8px; font-size: 1rem; color: var(--acento); }
 .fila { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }

@@ -83,11 +83,32 @@ function mostrarAcceso(visible) {
   $("acceso").hidden = !visible;
   if (visible) $("clave").focus();
 }
-// Al ocultarse el formulario tras enviarlo, el navegador ofrece guardar la clave.
-// Vuelve a aparecer si falta la clave o el Worker la rechaza.
-$("acceso").addEventListener("submit", (ev) => {
+// «Entrar» comprueba la clave con el Worker. Este valida la clave antes de mirar
+// la ruta, así que /comprobar responde 401 si es incorrecta y 404 si es correcta,
+// sin llamar a Claude. Al ocultarse el formulario tras una comprobación correcta,
+// el navegador ofrece guardar la clave. Vuelve a aparecer si falta la clave o el
+// Worker la rechaza más tarde.
+$("acceso").addEventListener("submit", async (ev) => {
   ev.preventDefault();
-  mostrarAcceso(false);
+  const aviso = $("error-acceso");
+  const boton = $("acceso").querySelector("button");
+  aviso.hidden = true;
+  boton.disabled = true;
+  try {
+    const resp = await fetch(CONFIG.WORKER_URL + "/comprobar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Clave-Acceso": $("clave").value },
+      body: "{}",
+    });
+    if (resp.status === 401) throw new Error("Clave de acceso incorrecta.");
+    mostrarAcceso(false);
+  } catch (e) {
+    aviso.textContent = e instanceof TypeError ? "No se pudo comprobar la clave: revisa la conexión." : e.message;
+    aviso.hidden = false;
+    $("clave").select();
+  } finally {
+    boton.disabled = false;
+  }
 });
 
 // --- Formulario -----------------------------------------------------------
