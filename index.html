@@ -13,13 +13,15 @@
   </header>
 
   <main>
-    <section id="acceso" class="tarjeta">
+    <form id="acceso" class="tarjeta">
       <h2>Acceso</h2>
+      <input type="text" name="usuario" value="Partidas de Bautismo" autocomplete="username" hidden>
       <label>Clave de acceso
-        <input id="clave" type="password" autocomplete="current-password">
+        <input id="clave" name="clave" type="password" autocomplete="current-password" required>
       </label>
-      <small>Se guarda solo en este dispositivo.</small>
-    </section>
+      <button type="submit" class="boton">Entrar</button>
+      <small>La web no guarda la clave. Si quieres, deja que la recuerde el gestor de contraseñas del navegador.</small>
+    </form>
 
     <section id="paso-foto" class="tarjeta">
       <fieldset class="selector-tipo">
@@ -31,6 +33,7 @@
       <input id="entrada-foto" type="file" accept="image/*" hidden>
       <img id="vista" alt="Imagen de la partida" hidden>
       <p id="estado" role="status"></p>
+      <button id="cambiar-clave" type="button" class="boton secundario" hidden>Cambiar la clave de acceso</button>
     </section>
 
     <form id="formulario" class="tarjeta" hidden>
@@ -51,6 +54,6 @@
   <script src="lib/pizzip.min.js"></script>
   <script src="lib/docxtemplater.js"></script>
   <script src="config.js?v=4"></script>
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

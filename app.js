@@ -76,10 +76,20 @@ for (const radio of document.querySelectorAll('input[name="tipo"]')) {
 }
 
 // --- Acceso ---------------------------------------------------------------
-try { $("clave").value = localStorage.getItem("clave") || ""; } catch {}
-$("clave").addEventListener("change", () => {
-  try { localStorage.setItem("clave", $("clave").value); } catch {}
+// La web no guarda la clave: si se quiere, la recuerda el gestor de contraseñas
+// del navegador. Se borra la que guardaban versiones anteriores en localStorage.
+try { localStorage.removeItem("clave"); } catch {}
+function mostrarAcceso(visible) {
+  $("acceso").hidden = !visible;
+  $("cambiar-clave").hidden = visible;
+  if (visible) $("clave").focus();
+}
+// Al ocultarse el formulario tras enviarlo, el navegador ofrece guardar la clave.
+$("acceso").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  mostrarAcceso(false);
 });
+$("cambiar-clave").addEventListener("click", () => mostrarAcceso(true));
 
 // --- Formulario -----------------------------------------------------------
 function control(c) {
@@ -141,6 +151,7 @@ async function llamar(ruta, cuerpo) {
     body: JSON.stringify(cuerpo),
   });
   const datos = await resp.json().catch(() => ({}));
+  if (resp.status === 401) mostrarAcceso(true);
   if (!resp.ok) throw new Error(datos.error || `Error ${resp.status}`);
   return datos;
 }
@@ -149,7 +160,11 @@ $("entrada-foto").addEventListener("change", async (ev) => {
   const archivo = ev.target.files[0];
   ev.target.value = ""; // permite volver a elegir el mismo archivo tras un error
   if (!archivo) return;
-  if (!$("clave").value) { estado("Introduce primero la clave de acceso.", true); return; }
+  if (!$("clave").value) {
+    estado("Introduce primero la clave de acceso.", true);
+    mostrarAcceso(true);
+    return;
+  }
   try {
     estado("Preparando la imagen…");
     const { dataUrl, base64 } = await reducir(archivo);
