@@ -14,6 +14,7 @@ equipo ──► web (GitHub Pages) ──► Worker de Cloudflare ──► API
 | Ruta | Contenido |
 |---|---|
 | `index.html`, `app.js`, `style.css`, `config.js` | La web |
+| `lib/` | Librerías PizZip 3.1.7 y docxtemplater 3.47.4 (licencia MIT), copiadas en el repositorio en lugar de cargarlas desde un CDN |
 | `plantilla/plantilla_partida.docx` | Plantilla Word en blanco de la partida, con campos `{nombre}`, `{padre}`… |
 | `plantilla/plantilla_volante.docx` | Plantilla Word en blanco del volante (modelo de la parroquia, con su escudo) |
 | `worker/` | Worker de Cloudflare (guarda la clave de Claude y le reenvía la imagen) |
